@@ -59,9 +59,11 @@ export async function runThreadSubscription(options: {
   let retryMs = 250;
   while (!signal.aborted) {
     const attempt = new AbortController();
-    const attemptSignal = AbortSignal.any([signal, attempt.signal]);
+    const abortAttempt = () => attempt.abort(signal.reason);
+    signal.addEventListener("abort", abortAttempt, { once: true });
+    if (signal.aborted) abortAttempt();
     try {
-      const events = await options.subscribe(cursor, attemptSignal);
+      const events = await options.subscribe(cursor, attempt.signal);
       const iterator = events[Symbol.asyncIterator]();
       try {
         let pending: Promise<IteratorResult<ProductEvent>> | undefined;
@@ -98,6 +100,7 @@ export async function runThreadSubscription(options: {
     } catch {
       // Reconnect from the last durable event after a transient transport failure.
     } finally {
+      signal.removeEventListener("abort", abortAttempt);
       // Also release attempts that failed before returning an iterator.
       attempt.abort();
     }

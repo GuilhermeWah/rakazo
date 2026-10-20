@@ -52,7 +52,11 @@ function setup(committed: typeof head | null = head) {
   };
   return { abort, channel, state, callbacks };
 }
-afterEach(() => vi.useRealTimers());
+afterEach(() => {
+  vi.useRealTimers();
+  vi.unstubAllGlobals();
+  vi.restoreAllMocks();
+});
 
 describe("thread subscription recovery", () => {
   it("falls back to head with backoff and buffers until a snapshot commits", async () => {
@@ -301,5 +305,30 @@ describe("thread subscription recovery", () => {
     await running;
     expect(openTransports).toBe(0);
     expect(callbacks.applyEvent).not.toHaveBeenCalled();
+  });
+
+  it("forwards cancellation without AbortSignal.any and removes retired parent listeners", async () => {
+    vi.useFakeTimers();
+    const { abort, channel, callbacks } = setup();
+    vi.stubGlobal("AbortSignal", { any: undefined });
+    const add = vi.spyOn(abort.signal, "addEventListener");
+    const remove = vi.spyOn(abort.signal, "removeEventListener");
+    const running = runThreadSubscription(callbacks);
+    void running.catch(() => {});
+    await vi.advanceTimersByTimeAsync(0);
+    expect(callbacks.subscribe).toHaveBeenCalledTimes(1);
+    const firstListener = add.mock.calls[0]?.[1];
+    channel.end();
+    await vi.advanceTimersByTimeAsync(250);
+    expect(callbacks.subscribe).toHaveBeenCalledTimes(2);
+    expect(remove).toHaveBeenCalledWith("abort", firstListener);
+    const currentSignal = callbacks.subscribe.mock.calls[1]?.[1];
+    const reason = new Error("switched thread");
+    abort.abort(reason);
+    expect(currentSignal?.aborted).toBe(true);
+    expect(currentSignal?.reason).toBe(reason);
+    channel.end();
+    await expect(running).resolves.toBeUndefined();
+    expect(add.mock.calls.length).toBe(remove.mock.calls.length);
   });
 });
