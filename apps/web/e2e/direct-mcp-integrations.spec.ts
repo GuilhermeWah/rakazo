@@ -24,7 +24,7 @@ test("shows directly registered MCP servers in Integrations without catalog conn
       endpoint: `https://${name.toLowerCase()}.example.test/mcp`,
       secret: "fake-mcp-credential",
     });
-  expect(await rpc(page, "connections/list")).toEqual([]);
+  expect(await rpc(page, "connections/list", undefined)).toEqual([]);
   await page.getByRole("button", { name: "Connect apps", exact: true }).click();
   const servers = page.getByTestId("registered-mcp-servers");
   await expect(servers.getByText("Dropbox", { exact: true })).toBeVisible();
