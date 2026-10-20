@@ -2090,7 +2090,7 @@ msgstr ""
 
 #: src/pages/PluginsOverlay.tsx
 msgid "Disabled"
-msgstr ""
+msgstr "Desativado"
 
 #: src/pages/shell/bot-panel.tsx
 msgid "Disabled tools"
@@ -3427,7 +3427,7 @@ msgstr "Falha na conexão OAuth"
 #: src/pages/McpServersOverlay.tsx
 #: src/pages/PluginsOverlay.tsx
 msgid "OAuth expired"
-msgstr ""
+msgstr "Autorização OAuth expirada"
 
 #: src/pages/RoutineEditor.tsx
 msgid "On a schedule"

@@ -2090,7 +2090,7 @@ msgstr "MCP direct"
 
 #: src/pages/PluginsOverlay.tsx
 msgid "Disabled"
-msgstr ""
+msgstr "Désactivé"
 
 #: src/pages/shell/bot-panel.tsx
 msgid "Disabled tools"

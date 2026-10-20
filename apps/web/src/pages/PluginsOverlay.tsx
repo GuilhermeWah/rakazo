@@ -1224,6 +1224,17 @@ export function PluginsOverlay({
                         </Button>
                       </div>
                     ))}
+                    {onOpenMcp && mcpServers.length === 0 && !mcpError ? (
+                      <Button
+                        type="button"
+                        variant="link"
+                        size="xs"
+                        className="mt-2 px-0 text-muted-foreground"
+                        onClick={onOpenMcp}
+                      >
+                        <Trans>Manage MCP servers</Trans>
+                      </Button>
+                    ) : null}
                   </div>
                 </div>
               </details>

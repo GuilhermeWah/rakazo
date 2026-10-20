@@ -2090,7 +2090,7 @@ msgstr "MCP ישיר"
 
 #: src/pages/PluginsOverlay.tsx
 msgid "Disabled"
-msgstr ""
+msgstr "מושבת"
 
 #: src/pages/shell/bot-panel.tsx
 msgid "Disabled tools"

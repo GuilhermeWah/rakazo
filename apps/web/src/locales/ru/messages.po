@@ -2090,7 +2090,7 @@ msgstr "Прямой MCP"
 
 #: src/pages/PluginsOverlay.tsx
 msgid "Disabled"
-msgstr ""
+msgstr "Отключено"
 
 #: src/pages/shell/bot-panel.tsx
 msgid "Disabled tools"

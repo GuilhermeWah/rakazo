@@ -2090,7 +2090,7 @@ msgstr ""
 
 #: src/pages/PluginsOverlay.tsx
 msgid "Disabled"
-msgstr ""
+msgstr "Devre dışı"
 
 #: src/pages/shell/bot-panel.tsx
 msgid "Disabled tools"
@@ -3427,7 +3427,7 @@ msgstr "OAuth bağlantısı başarısız"
 #: src/pages/McpServersOverlay.tsx
 #: src/pages/PluginsOverlay.tsx
 msgid "OAuth expired"
-msgstr ""
+msgstr "OAuth süresi doldu"
 
 #: src/pages/RoutineEditor.tsx
 msgid "On a schedule"
