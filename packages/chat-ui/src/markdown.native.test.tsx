@@ -223,7 +223,8 @@ function tableRows(html: string) {
 
 describe("compact native markdown", () => {
   it("reduces body and heading sizes only for explicitly compact messages", () => {
-    const content = "# Heading\n\nMessage detail";
+    const headings = ["One", "Two", "Three", "Four", "Five", "Six"];
+    const content = `${headings.map((heading, i) => `${"#".repeat(i + 1)} ${heading}`).join("\n\n")}\n\nMessage detail`;
     const render = (compact: boolean) =>
       new DOMParser().parseFromString(
         renderToStaticMarkup(<ChatMarkdown compact={compact}>{content}</ChatMarkdown>),
@@ -235,6 +236,19 @@ describe("compact native markdown", () => {
     expect(normal.querySelector('[data-font-size="21"]')).not.toBeNull();
     expect(compact.querySelector('[data-font-size="12.5"]')).not.toBeNull();
     expect(compact.querySelector('[data-font-size="18"]')).not.toBeNull();
+    const headingSizes = (document: Document) =>
+      headings.map((heading) =>
+        Number(
+          [...document.querySelectorAll("[data-font-size]")]
+            .find((element) => element.textContent === heading)
+            ?.getAttribute("data-font-size"),
+        ),
+      );
+    const regularSizes = headingSizes(normal);
+    const compactSizes = headingSizes(compact);
+    expect(regularSizes).toEqual([21, 19, 17, 16, 13, 11]);
+    expect(compactSizes).toEqual(regularSizes.map((size) => size - 3));
+    expect([...compactSizes].sort((a, b) => b - a)).toEqual(compactSizes);
   });
 });
 

@@ -126,6 +126,15 @@ function markdownStyles(palette: ColorTokens, compact: boolean) {
       marginTop: 0,
       marginBottom: 0,
     },
+    heading4: {
+      fontSize: compact ? 13 : 16,
+    },
+    heading5: {
+      fontSize: compact ? 10 : 13,
+    },
+    heading6: {
+      fontSize: compact ? 8 : 11,
+    },
     strong: {
       color: palette.foreground,
       fontWeight: "700",

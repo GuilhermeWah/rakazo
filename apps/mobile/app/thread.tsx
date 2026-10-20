@@ -3902,6 +3902,7 @@ const MessageBubble = memo(function MessageBubble({
             tokens={tokens}
             colorScheme={colorScheme}
             streaming={message.id.startsWith("progress:")}
+            compact={compact}
           />
         ) : null}
         {attachments.map((attachment, index) =>
