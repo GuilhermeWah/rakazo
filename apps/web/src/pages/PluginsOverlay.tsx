@@ -116,13 +116,18 @@ export function PluginsOverlay({
   const [toolsOpen, setToolsOpen] = useState(true);
   const [toolsTick, setToolsTick] = useState(0);
   const connectionAttempt = useRef<AbortController | null>(null);
+  const mcpRefreshGeneration = useRef(0);
 
   async function refreshMcp() {
+    const generation = ++mcpRefreshGeneration.current;
     try {
-      setMcpServers(await rpc.mcp.servers.list());
+      const servers = await rpc.mcp.servers.list();
+      if (generation !== mcpRefreshGeneration.current) return;
+      setMcpServers(servers);
       setMcpError(null);
     } catch (reason) {
-      setMcpError(errorText(reason, t`Could not load MCP servers`));
+      if (generation === mcpRefreshGeneration.current)
+        setMcpError(errorText(reason, t`Could not load MCP servers`));
     }
   }
 
@@ -159,7 +164,10 @@ export function PluginsOverlay({
     void refresh()
       .catch((err: unknown) => setCatalogError(errorText(err, t`Could not load integrations`)))
       .finally(() => setLoading(false));
-    return () => connectionAttempt.current?.abort();
+    return () => {
+      mcpRefreshGeneration.current += 1;
+      connectionAttempt.current?.abort();
+    };
   }, []);
 
   useEffect(() => {
@@ -1216,17 +1224,6 @@ export function PluginsOverlay({
                         </Button>
                       </div>
                     ))}
-                    {onOpenMcp ? (
-                      <Button
-                        type="button"
-                        variant="link"
-                        size="xs"
-                        className="mt-2 px-0 text-muted-foreground"
-                        onClick={onOpenMcp}
-                      >
-                        <Trans>Manage MCP servers</Trans>
-                      </Button>
-                    ) : null}
                   </div>
                 </div>
               </details>
