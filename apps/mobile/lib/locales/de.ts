@@ -885,4 +885,11 @@ export const DE_MESSAGES: Record<string, string> = {
   "Try again": "Erneut versuchen",
   "Your session expired": "Deine Sitzung ist abgelaufen",
   "The server had a problem": "Auf dem Server ist ein Problem aufgetreten",
+  "Could not load MCP servers": "MCP-Server konnten nicht geladen werden",
+  "MCP servers": "MCP-Server",
+  Disabled: "Deaktiviert",
+  "OAuth connected": "OAuth verbunden",
+  "OAuth expired": "OAuth abgelaufen",
+  "credential saved": "Zugangsdaten gespeichert",
+  "no auth": "keine Authentifizierung",
 };

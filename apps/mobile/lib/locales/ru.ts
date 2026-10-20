@@ -882,4 +882,11 @@ export const RU_MESSAGES: Record<string, string> = {
   "Try again": "Повторить",
   "Your session expired": "Сеанс истёк",
   "The server had a problem": "На сервере произошла ошибка",
+  "Could not load MCP servers": "Не удалось загрузить серверы MCP",
+  "MCP servers": "Серверы MCP",
+  Disabled: "Отключено",
+  "OAuth connected": "OAuth подключён",
+  "OAuth expired": "Срок действия OAuth истёк",
+  "credential saved": "учётные данные сохранены",
+  "no auth": "без авторизации",
 };

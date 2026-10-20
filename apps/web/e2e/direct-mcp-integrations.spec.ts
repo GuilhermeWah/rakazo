@@ -22,6 +22,12 @@ test("shows directly registered MCP servers in Integrations without catalog conn
   await expect(servers.getByText("Dropbox", { exact: true })).toBeVisible();
   await expect(servers.getByText("GitHub", { exact: true })).toBeVisible();
   await expect(servers.getByTestId("registered-mcp-server")).toHaveCount(2);
+  for (const name of ["Dropbox", "GitHub"]) {
+    const server = servers.getByTestId("registered-mcp-server").filter({
+      has: page.getByText(name, { exact: true }),
+    });
+    await expect(server.getByText("credential saved", { exact: true })).toBeVisible();
+  }
   await expect(servers).not.toContainText("fake-mcp-credential");
   await captureScreenshot(page, testInfo, "integrations-direct-mcp-servers");
   await page.getByRole("textbox", { name: "Search apps", exact: true }).fill("github");

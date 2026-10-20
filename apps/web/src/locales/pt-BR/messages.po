@@ -1606,6 +1606,7 @@ msgid "Could not load integrations"
 msgstr "Não foi possível carregar as integrações"
 
 #: src/pages/McpServersOverlay.tsx
+#: src/pages/PluginsOverlay.tsx
 msgid "Could not load MCP servers"
 msgstr "Não foi possível carregar os servidores MCP"
 
@@ -2085,6 +2086,10 @@ msgstr "Detalhes"
 
 #: src/components/integrations/IntegrationSetup.tsx
 msgid "Direct MCP"
+msgstr ""
+
+#: src/pages/PluginsOverlay.tsx
+msgid "Disabled"
 msgstr ""
 
 #: src/pages/shell/bot-panel.tsx
@@ -2961,6 +2966,7 @@ msgid "MCP endpoint"
 msgstr ""
 
 #: src/pages/McpServersOverlay.tsx
+#: src/pages/PluginsOverlay.tsx
 msgid "MCP servers"
 msgstr "Servidores MCP"
 
@@ -3410,6 +3416,7 @@ msgid "OAuth authorization was cancelled."
 msgstr "A autorização OAuth foi cancelada."
 
 #: src/pages/McpServersOverlay.tsx
+#: src/pages/PluginsOverlay.tsx
 msgid "OAuth connected"
 msgstr "OAuth conectado"
 
@@ -3418,6 +3425,7 @@ msgid "OAuth connection failed"
 msgstr "Falha na conexão OAuth"
 
 #: src/pages/McpServersOverlay.tsx
+#: src/pages/PluginsOverlay.tsx
 msgid "OAuth expired"
 msgstr ""
 
@@ -4010,6 +4018,7 @@ msgstr ""
 #: src/components/AccountAccess.tsx
 #: src/pages/Auth.tsx
 #: src/pages/ModelBackupsSettings.tsx
+#: src/pages/PluginsOverlay.tsx
 #: src/pages/SettingsOverlay.tsx
 msgid "Retry"
 msgstr "Tentar novamente"

@@ -842,4 +842,11 @@ export const NL_MESSAGES: Record<string, string> = {
   "Try again": "Opnieuw proberen",
   "Your session expired": "Je sessie is verlopen",
   "The server had a problem": "Er is een probleem met de server",
+  "Could not load MCP servers": "MCP-servers laden mislukt",
+  "MCP servers": "MCP-servers",
+  Disabled: "Uitgeschakeld",
+  "OAuth connected": "OAuth verbonden",
+  "OAuth expired": "OAuth verlopen",
+  "credential saved": "inloggegevens opgeslagen",
+  "no auth": "geen authenticatie",
 };
