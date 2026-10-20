@@ -307,6 +307,9 @@ export function modelCredentialDto(
     ...(credential.thinkingLevel !== undefined || parsed.thinkingLevel !== undefined
       ? { thinkingLevel: credential.thinkingLevel ?? parsed.thinkingLevel }
       : {}),
+    ...(parsed.thinkingLevel !== undefined
+      ? { connectionThinkingLevel: parsed.thinkingLevel }
+      : {}),
     ...(parsed.maxTokens !== undefined ? { maxTokens: parsed.maxTokens } : {}),
     ...(parsed.contextWindow !== undefined ? { contextWindow: parsed.contextWindow } : {}),
     cacheCapabilities: parsed.cacheCapabilities,

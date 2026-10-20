@@ -256,6 +256,12 @@ export function BotSettings({
     bot.modelProvider && bot.modelId ? modelOptionKey(bot.modelProvider, bot.modelId) : "",
   );
   const [thinkingLevel, setThinkingLevel] = useState(bot.thinkingLevel ?? "");
+  useEffect(() => {
+    setModelKey(
+      bot.modelProvider && bot.modelId ? modelOptionKey(bot.modelProvider, bot.modelId) : "",
+    );
+  }, [bot.modelProvider, bot.modelId]);
+  useEffect(() => setThinkingLevel(bot.thinkingLevel ?? ""), [bot.thinkingLevel]);
   const [disabledBuiltinTools, setDisabledBuiltinTools] = useState<string[]>(
     bot.disabledBuiltinTools ?? [],
   );

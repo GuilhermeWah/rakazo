@@ -154,6 +154,27 @@ describe("thread composer isolation", () => {
     expect(props.send).toHaveBeenCalledOnce();
   });
 
+  it("blocks sending during a settings save while keeping Stop available", () => {
+    type("Draft");
+    render({ working: true, sendDisabled: true });
+    press("Send");
+    expect(props.send).not.toHaveBeenCalled();
+    press("Stop");
+    expect(props.stop).toHaveBeenCalledOnce();
+    expect(composer.current!.snapshot().promptText).toBe("Draft");
+    render({ working: true, sendDisabled: false });
+    press("Send");
+    expect(props.send).toHaveBeenCalledOnce();
+  });
+  it("blocks an empty-draft call while a settings save is pending", () => {
+    render({ sendDisabled: true });
+    press("Call");
+    expect(props.startVoiceCall).not.toHaveBeenCalled();
+    render({ sendDisabled: false });
+    press("Call");
+    expect(props.startVoiceCall).toHaveBeenCalledOnce();
+  });
+
   it("preserves draft across reply, attachment, and sending updates and resets on thread switch", () => {
     type("Draft");
     render({

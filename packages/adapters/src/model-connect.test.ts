@@ -594,9 +594,32 @@ it.each([null, "low", "high"] as const)(
         },
         plaintext,
       ),
-    ).toMatchObject({ thinkingLevel });
+    ).toMatchObject({ thinkingLevel, connectionThinkingLevel: thinkingLevel });
   },
 );
+
+it("keeps compatible connection effort separate from a model preference", () => {
+  const plaintext = buildModelConnectPlaintext({
+    provider: "openai-compatible",
+    baseUrl: "http://localhost:8000/v1",
+    modelId: "model-a",
+    reasoning: true,
+    thinkingLevel: "high",
+  });
+  expect(
+    modelCredentialDto(
+      {
+        id: "cred",
+        provider: "openai-compatible",
+        label: "Server",
+        isDefault: true,
+        defaultModel: "model-a",
+        thinkingLevel: "low",
+      },
+      plaintext,
+    ),
+  ).toMatchObject({ thinkingLevel: "low", connectionThinkingLevel: "high" });
+});
 
 describe("compatible connection updates", () => {
   const input = {

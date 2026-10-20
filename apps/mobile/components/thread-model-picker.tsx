@@ -40,18 +40,26 @@ export function ThreadModelPicker({
   useFocusEffect(
     useCallback(() => {
       let current = true;
-      void Promise.all([
-        rpc<MobileModelCredential[]>("models/credentials"),
-        rpc<MobileModel[]>("models/list"),
-        rpc<MobileMe>("me"),
-      ])
-        .then(([credentials, catalog, me]) => {
-          if (current) setMetadata({ credentials, catalog, me });
-        })
-        .catch((reason) => {
-          if (current)
-            Alert.alert(t("Could not load model settings"), errorText(reason, t("Try again.")));
-        });
+      let attempt = 0;
+      async function load() {
+        if (!current) return;
+        const thisAttempt = ++attempt;
+        try {
+          const [credentials, catalog, me] = await Promise.all([
+            rpc<MobileModelCredential[]>("models/credentials"),
+            rpc<MobileModel[]>("models/list"),
+            rpc<MobileMe>("me"),
+          ]);
+          if (current && thisAttempt === attempt) setMetadata({ credentials, catalog, me });
+        } catch (reason) {
+          if (current && thisAttempt === attempt)
+            Alert.alert(t("Could not load model settings"), errorText(reason, t("Try again.")), [
+              { text: t("Cancel"), style: "cancel" },
+              { text: t("Retry"), onPress: () => void load() },
+            ]);
+        }
+      }
+      void load();
       return () => {
         current = false;
       };
@@ -60,6 +68,8 @@ export function ThreadModelPicker({
   const catalog = metadata?.catalog ?? [];
   const options = connectedModelChoices(metadata?.credentials ?? [], catalog);
   const value =
+    bot.modelProvider && bot.modelId ? modelOptionKey(bot.modelProvider, bot.modelId) : "";
+  const displayValue =
     bot.modelProvider && bot.modelId
       ? modelOptionKey(
           bot.modelProvider,
@@ -100,7 +110,7 @@ export function ThreadModelPicker({
       });
       onUpdated(updated);
     } catch (reason) {
-      Alert.alert(t("Could not save"), errorText(reason, t("Try again.")));
+      Alert.alert(t("Could not save bot"), errorText(reason, t("Try again.")));
     } finally {
       choosing.current = false;
       setBusy(false);
@@ -126,7 +136,7 @@ export function ThreadModelPicker({
     await save({ thinkingLevel: (level || null) as ThinkingLevel | null });
   }
   const label =
-    choices.find((choice) => choice.key === value)?.label ??
+    choices.find((choice) => choice.key === displayValue)?.label ??
     (value
       ? (catalog.find((entry) => entry.provider === bot.modelProvider && entry.id === bot.modelId)
           ?.label ?? bot.modelId)
@@ -175,7 +185,7 @@ export function ThreadModelPicker({
             />
           </View>
         </MenuPickerMenu>
-        {effort.levels.length > 0 ? (
+        {effort.levels.length > 0 || effort.value ? (
           <MenuPickerMenu
             label={t("Reasoning effort")}
             choices={effortChoices}
@@ -187,7 +197,7 @@ export function ThreadModelPicker({
               accessibilityRole="button"
               accessibilityLabel={t("Reasoning effort")}
               accessibilityValue={{
-                text: effortChoices.find((choice) => choice.key === (effort.value ?? ""))?.label,
+                text: effort.value ? effortLabel(effort.value) : effortChoices[0]?.label,
               }}
               accessibilityState={{ disabled: disabled || busy || !metadata }}
               style={{
@@ -203,7 +213,7 @@ export function ThreadModelPicker({
                 numberOfLines={1}
                 style={{ color: tokens.mutedForeground, fontSize: 12.5, flexShrink: 1 }}
               >
-                {effortChoices.find((choice) => choice.key === (effort.value ?? ""))?.label}
+                {effort.value ? effortLabel(effort.value) : effortChoices[0]?.label}
               </Text>
               <NativeSymbol
                 ios="chevron.down"

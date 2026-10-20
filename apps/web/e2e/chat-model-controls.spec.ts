@@ -1,4 +1,5 @@
 import { expect, test } from "@playwright/test";
+import { createDb } from "../../../packages/db/src/index";
 import {
   activeBotId,
   captureScreenshot,
@@ -121,4 +122,61 @@ test("switches the conversation model per bot and preserves its draft and space 
     modelId: null,
   });
   await captureScreenshot(page, testInfo, "chat-model-mobile");
+});
+
+test("replaces historical model IDs and clears a stale effort override", async ({ page }) => {
+  await signup(page, `chat-model-legacy-${Date.now()}@rakazo.test`, "password12", "Legacy Model");
+  await completeOnboarding(page);
+  const chiefId = activeBotId(page);
+  await rpc(page, "models/connect", {
+    provider: "deepseek",
+    apiKey: "fake-model-key",
+    modelId: "deepseek-flash",
+  });
+  const { prisma, pool } = createDb(process.env.DATABASE_URL!);
+  try {
+    await prisma.bot.update({
+      where: { id: chiefId },
+      data: { modelProvider: "deepseek", modelId: "DeepSeek-V4.1-Flash" },
+    });
+    await page.reload();
+    const picker = page.getByTestId("thread-model-picker");
+    const model = picker.getByRole("combobox", { name: "Model", exact: true });
+    await expect(model).toHaveText("DeepSeek · DeepSeek V4.1 Flash");
+    await expect(model).toBeEnabled();
+    await model.click();
+    await page.getByRole("option", { name: "DeepSeek · DeepSeek V4.1 Flash", exact: true }).click();
+    await expect
+      .poll(async () => (await prisma.bot.findUniqueOrThrow({ where: { id: chiefId } })).modelId)
+      .toBe("deepseek-flash");
+    await prisma.bot.update({ where: { id: chiefId }, data: { thinkingLevel: "max" } });
+    await page.route("**/rpc/models/credentials", async (route) => {
+      const response = await route.fetch();
+      const body = await response.json();
+      await route.fulfill({
+        response,
+        json: {
+          ...body,
+          json: body.json.map((credential: { provider: string }) =>
+            credential.provider === "deepseek"
+              ? { ...credential, thinkingLevels: ["low", "medium"] }
+              : credential,
+          ),
+        },
+      });
+    });
+    await page.reload();
+    const effort = picker.getByRole("combobox", { name: "Reasoning effort", exact: true });
+    await expect(effort).toHaveText("Max");
+    await effort.click();
+    await page.getByRole("option", { name: /^Default/ }).click();
+    await expect
+      .poll(
+        async () => (await prisma.bot.findUniqueOrThrow({ where: { id: chiefId } })).thinkingLevel,
+      )
+      .toBeNull();
+  } finally {
+    await prisma.$disconnect();
+    await pool.end();
+  }
 });

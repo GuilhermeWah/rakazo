@@ -1906,6 +1906,7 @@ function Thread({ sessionEpoch }: { sessionEpoch: number }) {
 
   /** `switchedHere`: the caller asked another bot to put them through, so this bot answers. */
   async function startVoiceCall(switchedHere = false) {
+    if (modelChangingBotId !== null) return;
     if (readOnly) return;
     const targetBotId = botId;
     if (!targetBotId || voiceCallStarting.current) return;
@@ -2736,7 +2737,8 @@ function Thread({ sessionEpoch }: { sessionEpoch: number }) {
           botId={botId}
           onCall={onCall}
           working={working}
-          sending={sending || modelChangingBotId !== null}
+          sending={sending}
+          sendDisabled={modelChangingBotId !== null}
           styles={styles}
           attachActions={attachActions}
           attachFrom={attachFrom}

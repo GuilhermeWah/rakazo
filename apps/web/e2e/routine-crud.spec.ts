@@ -144,9 +144,11 @@ test("a routine runs on the bot's model until another is picked", async ({ page 
   await page.locator("label:has-text('Instruction') textarea").fill("Check the inbox");
   await addScheduleTrigger(page, "Every day");
 
-  await expect(page.getByRole("combobox", { name: "Model", exact: true })).toHaveCount(0);
+  const modelSelect = page
+    .getByRole("combobox", { name: "Model", exact: true })
+    .and(page.locator("select"));
+  await expect(modelSelect).toHaveCount(0);
   await page.getByRole("button", { name: "Advanced", exact: true }).click();
-  const modelSelect = page.getByRole("combobox", { name: "Model", exact: true });
   await expect(modelSelect).toHaveValue("");
   await expect(modelSelect).toContainText("Bot's model");
   await captureScreenshot(page, testInfo, "routine-model-picker");

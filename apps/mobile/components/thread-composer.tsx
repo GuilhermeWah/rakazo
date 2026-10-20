@@ -35,6 +35,7 @@ type ThreadComposerProps = {
   onCall: boolean;
   working: boolean;
   sending: boolean;
+  sendDisabled?: boolean;
   styles: { circleButton: ViewStyle; composerFill: ViewStyle };
   attachActions: MenuAction[];
   attachFrom: (source: string) => void;
@@ -56,6 +57,7 @@ export function ThreadComposer({
   onCall,
   working,
   sending,
+  sendDisabled = false,
   styles,
   attachActions,
   attachFrom,
@@ -471,6 +473,7 @@ export function ThreadComposer({
               accessibilityRole="button"
               accessibilityLabel={t("Call")}
               hitSlop={{ top: 8, bottom: 8, left: 4, right: 4 }}
+              disabled={sendDisabled}
               onPress={() => void startVoiceCall()}
               style={{ marginBottom: 8 }}
             >
@@ -491,10 +494,10 @@ export function ThreadComposer({
             <Pressable
               accessibilityRole="button"
               accessibilityLabel={t("Send")}
-              disabled={sending || !canSend}
+              disabled={sendDisabled || sending || !canSend}
               hitSlop={{ top: 8, bottom: 8, left: 4, right: 4 }}
               onPress={() => void send()}
-              style={{ marginBottom: 8, opacity: sending || !canSend ? 0.5 : 1 }}
+              style={{ marginBottom: 8, opacity: sendDisabled || sending || !canSend ? 0.5 : 1 }}
             >
               <GlassSurface
                 tint={tokens.primary}

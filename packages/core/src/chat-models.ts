@@ -1,4 +1,5 @@
 import type { Bot, Me, ModelCatalogEntry, ModelCredential, ThinkingLevel } from "@rakazo/contracts";
+import { canonicalPiProviderId } from "@rakazo/contracts";
 import {
   clampCatalogThinkingLevel,
   credentialForModel,
@@ -12,23 +13,32 @@ export function chatModelEffort(
   credentials: readonly ModelCredential[],
   catalog: readonly ModelCatalogEntry[],
 ) {
-  const provider = bot.modelProvider ?? defaults?.defaultProvider;
-  const modelId = bot.modelId ?? defaults?.defaultModel;
+  const rawProvider = bot.modelProvider ?? defaults?.defaultProvider;
+  const provider = rawProvider ? canonicalPiProviderId(rawProvider) : undefined;
+  const rawModelId = bot.modelId ?? defaults?.defaultModel;
+  const modelId =
+    provider && rawModelId ? resolveSelectableModelId(catalog, provider, rawModelId) : rawModelId;
   const entry = catalog.find(
     (model) =>
-      model.provider === provider &&
+      canonicalPiProviderId(model.provider) === provider &&
       resolveSelectableModelId(catalog, model.provider, model.id) === modelId,
   );
   const credential = credentialForModel(credentials, provider, modelId);
+  const preferenceModelId =
+    credential?.modelId && provider
+      ? resolveSelectableModelId(catalog, provider, credential.modelId)
+      : credential?.modelId;
   const levels: ThinkingLevel[] = (
     credential?.thinkingLevels ??
     entry?.thinkingLevels ??
     []
   ).filter((level) => level !== "off");
   const defaultLevel = clampCatalogThinkingLevel(
-    (credential?.modelId === modelId ? credential?.thinkingLevel : undefined) ?? "medium",
+    (preferenceModelId === modelId ? credential?.thinkingLevel : undefined) ??
+      credential?.connectionThinkingLevel ??
+      "medium",
     levels,
   ) as ThinkingLevel | null;
-  const value = bot.thinkingLevel && levels.includes(bot.thinkingLevel) ? bot.thinkingLevel : null;
+  const value = bot.thinkingLevel ?? null;
   return { levels, defaultLevel, value };
 }

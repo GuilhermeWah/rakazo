@@ -68,6 +68,8 @@ export function ThreadModelPicker({
   const catalog = metadata?.catalog ?? [];
   const choices = connectedModelChoices(metadata?.credentials ?? [], catalog);
   const value =
+    bot.modelProvider && bot.modelId ? modelOptionKey(bot.modelProvider, bot.modelId) : "";
+  const displayValue =
     bot.modelProvider && bot.modelId
       ? modelOptionKey(
           bot.modelProvider,
@@ -83,7 +85,7 @@ export function ThreadModelPicker({
     ...choices.map((choice) => ({ value: choice.key, label: choice.label })),
   ];
   const currentLabel =
-    options.find((option) => option.value === value)?.label ??
+    options.find((option) => option.value === displayValue)?.label ??
     (value
       ? (catalog.find((entry) => entry.provider === bot.modelProvider && entry.id === bot.modelId)
           ?.label ?? bot.modelId)
@@ -174,7 +176,7 @@ export function ThreadModelPicker({
             ))}
           </SelectContent>
         </Select>
-        {effort.levels.length > 0 ? (
+        {effort.levels.length > 0 || effort.value ? (
           <Select
             value={effort.value ?? ""}
             items={effortOptions}
@@ -188,7 +190,9 @@ export function ThreadModelPicker({
               size="sm"
               className="max-w-full border-0 bg-transparent text-[12.5px] text-muted-foreground shadow-none"
             >
-              <SelectValue />
+              <SelectValue>
+                {effort.value ? thinkingLevelLabel(effort.value) : effortOptions[0]?.label}
+              </SelectValue>
             </SelectTrigger>
             <SelectContent
               side="top"

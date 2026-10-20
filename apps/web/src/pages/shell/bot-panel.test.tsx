@@ -236,6 +236,22 @@ describe("BotSettings model choices", () => {
 });
 
 describe("BotSettings thinking options", () => {
+  it("follows a composer model change without clearing an unsaved profile draft", async () => {
+    await render("Billing", { modelProvider: "openai-compatible", modelId: "model-a" });
+    await setDescription("Unsaved profile draft");
+    await render("Billing", {
+      modelProvider: "openai-compatible",
+      modelId: "model-b",
+      thinkingLevel: "high",
+    });
+    expect(descriptionField().value).toBe("Unsaved profile draft");
+    await clickSave();
+    expect(onSave.mock.lastCall?.[0]).toMatchObject({
+      modelProvider: "openai-compatible",
+      modelId: "model-b",
+      description: "Unsaved profile draft",
+    });
+  });
   it("preserves saved thinking on a profile save when options are hidden", async () => {
     await render("Billing", {
       modelProvider: "openai-compatible",

@@ -55,6 +55,34 @@ describe("chat model effort", () => {
       value: null,
     });
   });
+  it("inherits connection-wide effort for another enabled compatible model", () => {
+    const compatible = {
+      ...credential,
+      provider: "openai-compatible",
+      authKind: "openai_compatible" as const,
+      modelId: "model-a",
+      enabledModelIds: ["model-a", "model-b"],
+      thinkingLevel: "low" as const,
+      connectionThinkingLevel: "high" as const,
+      thinkingLevels: ["low", "medium", "high"] as ModelCredential["thinkingLevels"],
+    };
+    expect(
+      chatModelEffort(
+        { ...bot, modelProvider: compatible.provider, modelId: "model-b" },
+        undefined,
+        [compatible],
+        [],
+      ).defaultLevel,
+    ).toBe("high");
+    expect(
+      chatModelEffort(
+        { ...bot, modelProvider: compatible.provider, modelId: "model-a" },
+        undefined,
+        [compatible],
+        [],
+      ).defaultLevel,
+    ).toBe("low");
+  });
   it("follows a bot override and ignores effort levels from another provider", () => {
     const result = chatModelEffort(
       { ...bot, modelProvider: "anthropic", modelId: "claude-sonnet-5-5", thinkingLevel: "high" },
@@ -78,7 +106,7 @@ describe("chat model effort", () => {
         [custom],
         [],
       ),
-    ).toEqual({ levels: ["low", "high"], defaultLevel: "high", value: null });
+    ).toEqual({ levels: ["low", "high"], defaultLevel: "high", value: "max" });
   });
   it("offers no effort controls without known model capabilities", () => {
     expect(chatModelEffort(bot, undefined, [], [])).toEqual({
@@ -86,5 +114,19 @@ describe("chat model effort", () => {
       defaultLevel: null,
       value: null,
     });
+  });
+  it("resolves historical model labels before looking up effort capabilities", () => {
+    const legacy = { ...entry("deepseek-flash", "deepseek"), label: "DeepSeek-V4.1-Flash" };
+    expect(
+      chatModelEffort(
+        { ...bot, modelProvider: "deepseek", modelId: legacy.label },
+        undefined,
+        [],
+        [legacy],
+      ).levels,
+    ).toEqual(["low", "medium", "high", "xhigh", "max"]);
+  });
+  it("keeps a stale override visible so selecting Default can clear it", () => {
+    expect(chatModelEffort({ ...bot, thinkingLevel: "max" }, undefined, [], []).value).toBe("max");
   });
 });

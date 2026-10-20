@@ -655,6 +655,7 @@ function SpaceShell() {
   const call = useCallSession();
   /** Calls a bot, or opens voice settings first when no voice is connected. */
   const callBot = (bot: Bot) => {
+    if (modelChangingBotId !== null) return;
     if (!bootstrapMe?.phoneCallsEnabled) return;
     if (!voiceStatus?.ready) {
       openSettings("voice");
@@ -3939,6 +3940,7 @@ function SpaceShell() {
               <button
                 type="button"
                 data-testid="call-button"
+                disabled={modelChangingBotId !== null}
                 aria-label={call?.botId === active.id ? t`Open call` : t`Call`}
                 title={call?.botId === active.id ? t`Open call` : t`Call`}
                 onClick={() => {
@@ -3949,7 +3951,7 @@ function SpaceShell() {
                   callBot(active);
                 }}
                 data-active={call?.botId === active.id ? "" : undefined}
-                className="app-no-drag grid h-[30px] w-[34px] place-items-center rounded-[9px] hover:bg-accent data-active:bg-accent"
+                className="app-no-drag grid h-[30px] w-[34px] place-items-center rounded-[9px] hover:bg-accent disabled:opacity-50 data-active:bg-accent"
               >
                 <Phone size={17} strokeWidth={1.6} className="text-foreground/75" />
               </button>
