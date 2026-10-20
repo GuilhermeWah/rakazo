@@ -131,6 +131,7 @@ import type { ThreadComposerHandle } from "../components/thread-composer";
 import { ThreadComposer } from "../components/thread-composer";
 import { ThreadErrorNotice } from "../components/thread-error-notice";
 import { createThreadHeaderStyles } from "../components/thread-header-styles";
+import { ThreadModelPicker } from "../components/thread-model-picker";
 import { TimeSeparator } from "../components/time-separator";
 import { VoiceChatCard } from "../components/VoiceChatCard";
 import { WorkingIndicator } from "../components/WorkingIndicator";
@@ -684,6 +685,7 @@ function Thread({ sessionEpoch }: { sessionEpoch: number }) {
       }),
     [groupId, inGroup, mentionBots, mentionConnectors, mentionGroups, mentionRoutines],
   );
+  const [modelChangingBotId, setModelChangingBotId] = useState<string | null>(null);
   const currentBot = botId ? mentionBots.find((bot) => bot.id === botId) : undefined;
   const displayName = safeDisplayName(currentBot?.name ?? name, inGroup ? t("Group") : t("Bot"));
   const composerPrompt = displayName ? t("Message {name}", { name: displayName }) : t("Message…");
@@ -2734,7 +2736,7 @@ function Thread({ sessionEpoch }: { sessionEpoch: number }) {
           botId={botId}
           onCall={onCall}
           working={working}
-          sending={sending}
+          sending={sending || modelChangingBotId !== null}
           styles={styles}
           attachActions={attachActions}
           attachFrom={attachFrom}
@@ -2743,6 +2745,23 @@ function Thread({ sessionEpoch }: { sessionEpoch: number }) {
           startVoiceCall={startVoiceCall}
           onSlashAction={runSlashAction}
         />
+        {!inGroup && currentBot ? (
+          <ThreadModelPicker
+            key={currentBot.id}
+            bot={currentBot}
+            disabled={modelChangingBotId !== null}
+            onUpdated={(updated) =>
+              setMentionBots((current) =>
+                current.map((bot) => (bot.id === updated.id ? updated : bot)),
+              )
+            }
+            onBusyChange={(busy) =>
+              setModelChangingBotId((current) =>
+                busy ? currentBot.id : current === currentBot.id ? null : current,
+              )
+            }
+          />
+        ) : null}
       </Animated.View>
       <Modal
         visible={botActionsOpen}

@@ -118,7 +118,7 @@ import {
   Trash2,
   X,
 } from "lucide-react";
-import type { ClipboardEvent, DragEvent, MutableRefObject, RefObject } from "react";
+import type { ClipboardEvent, DragEvent, MutableRefObject, ReactNode, RefObject } from "react";
 import {
   Fragment,
   memo,
@@ -155,6 +155,7 @@ import {
 import { lazyOverlay } from "../components/ErrorBoundary";
 import { MessageHoverMetadata } from "../components/MessageHoverMetadata";
 import { SidebarFooter } from "../components/SidebarFooter";
+import { ThreadModelPicker } from "../components/ThreadModelPicker";
 import {
   LIVE_TOOL_STEP_WINDOW,
   StandaloneToolActivity,
@@ -476,6 +477,7 @@ function SpaceShell() {
   const userId = session.data?.user.id;
   const [groups, setGroups] = useState<Group[]>([]);
   const [bots, setBots] = useState<Bot[]>([]);
+  const [modelChangingBotId, setModelChangingBotId] = useState<string | null>(null);
   const botsRef = useRef(bots);
   botsRef.current = bots;
   const botOrderEpochRef = useRef(0);
@@ -4038,9 +4040,28 @@ function SpaceShell() {
             key={inGroup ? `group:${groupId}` : `bot:${active?.id}`}
             draftKey={inGroup ? `group:${groupId}` : `bot:${active?.id}`}
             enterToSend={enterToSend}
+            modelPicker={
+              !inGroup && active ? (
+                <ThreadModelPicker
+                  key={active.id}
+                  bot={active}
+                  disabled={modelChangingBotId !== null}
+                  onUpdated={(updated) =>
+                    setBots((current) =>
+                      current.map((bot) => (bot.id === updated.id ? updated : bot)),
+                    )
+                  }
+                  onBusyChange={(busy) =>
+                    setModelChangingBotId((current) =>
+                      busy ? active.id : current === active.id ? null : current,
+                    )
+                  }
+                />
+              ) : undefined
+            }
             activeName={inGroup ? (activeGroup?.name ?? activeSnapshot?.groupName) : active?.name}
             running={composerRunning}
-            disabled={Boolean(recordingSkill)}
+            disabled={Boolean(recordingSkill) || modelChangingBotId !== null}
             pendingAttachments={activePendingAttachments}
             attachmentNotice={attachmentNotice}
             sendError={sendError}
@@ -5845,8 +5866,10 @@ export const Composer = memo(function Composer({
   onSlashAction,
   draftKey,
   enterToSend,
+  modelPicker,
 }: {
   activeName?: string;
+  modelPicker?: ReactNode;
   running: boolean;
   disabled?: boolean;
   pendingAttachments: PendingAttachment[];
@@ -6735,6 +6758,7 @@ export const Composer = memo(function Composer({
           )}
         </div>
       </div>
+      {modelPicker}
     </fieldset>
   );
 });
