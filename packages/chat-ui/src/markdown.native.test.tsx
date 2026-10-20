@@ -104,6 +104,8 @@ vi.mock("react-native", async () => {
 
   return {
     View: mockComponent("rn-view", [
+      "fontSize",
+      "lineHeight",
       "minWidth",
       "width",
       "maxWidth",
@@ -218,6 +220,23 @@ function tableRows(html: string) {
     ),
   }));
 }
+
+describe("compact native markdown", () => {
+  it("reduces body and heading sizes only for explicitly compact messages", () => {
+    const content = "# Heading\n\nMessage detail";
+    const render = (compact: boolean) =>
+      new DOMParser().parseFromString(
+        renderToStaticMarkup(<ChatMarkdown compact={compact}>{content}</ChatMarkdown>),
+        "text/html",
+      );
+    const normal = render(false);
+    const compact = render(true);
+    expect(normal.querySelector('[data-font-size="15.5"]')).not.toBeNull();
+    expect(normal.querySelector('[data-font-size="21"]')).not.toBeNull();
+    expect(compact.querySelector('[data-font-size="12.5"]')).not.toBeNull();
+    expect(compact.querySelector('[data-font-size="18"]')).not.toBeNull();
+  });
+});
 
 describe("native markdown tables", () => {
   it("wraps the table in a horizontal scroll view", () => {
