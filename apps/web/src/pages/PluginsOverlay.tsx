@@ -5,6 +5,7 @@ import type {
   ConnectionCatalogItem,
   IntegrationCatalogResult,
   IntegrationCatalogSurface,
+  McpServer,
 } from "@rakazo/contracts";
 import {
   abortableDelay,
@@ -88,6 +89,8 @@ export function PluginsOverlay({
   const [catalog, setCatalog] = useState<ConnectionCatalogItem[]>([]);
   const [connections, setConnections] = useState<Connection[]>([]);
   const [labelDrafts, setLabelDrafts] = useState<Record<string, string>>({});
+  const [mcpServers, setMcpServers] = useState<McpServer[]>([]);
+  const [mcpError, setMcpError] = useState<string | null>(null);
   const [sources, setSources] = useState<CapabilityInstall[]>([]);
   const [sourceKind, setSourceKind] = useState<SourceKind | null>(null);
   const [sourceName, setSourceName] = useState("");
@@ -114,7 +117,17 @@ export function PluginsOverlay({
   const [toolsTick, setToolsTick] = useState(0);
   const connectionAttempt = useRef<AbortController | null>(null);
 
+  async function refreshMcp() {
+    try {
+      setMcpServers(await rpc.mcp.servers.list());
+      setMcpError(null);
+    } catch (reason) {
+      setMcpError(errorText(reason, t`Could not load MCP servers`));
+    }
+  }
+
   async function refresh() {
+    void refreshMcp();
     const [items, installs, rows, catalogFeed] = await Promise.all([
       rpc.connections.catalog({}),
       rpc.capabilities.list(),
@@ -708,6 +721,56 @@ export function PluginsOverlay({
         ) : null}
 
         <div id="integration-list" className="rk-scroll flex-1 overflow-y-auto px-8 py-6">
+          {!detailItem && (mcpServers.length > 0 || mcpError) ? (
+            <section data-testid="registered-mcp-servers" className="mb-6">
+              <div className="mb-2 flex items-center justify-between gap-3">
+                <h2 className="text-sm font-medium">
+                  <Trans>MCP servers</Trans>
+                </h2>
+                {onOpenMcp ? (
+                  <Button variant="link" size="xs" onClick={onOpenMcp}>
+                    <Trans>Manage MCP servers</Trans>
+                  </Button>
+                ) : null}
+              </div>
+              {mcpError ? (
+                <div role="alert" className="flex items-center gap-2 text-sm text-destructive">
+                  {mcpError}
+                  <Button variant="link" size="xs" onClick={() => void refreshMcp()}>
+                    <Trans>Retry</Trans>
+                  </Button>
+                </div>
+              ) : null}
+              {mcpServers
+                .filter((server) =>
+                  `${server.name} ${server.description}`
+                    .toLowerCase()
+                    .includes(query.trim().toLowerCase()),
+                )
+                .map((server) => (
+                  <div
+                    key={server.id}
+                    data-testid="registered-mcp-server"
+                    className="flex items-center justify-between gap-3 rounded-xl px-3 py-2.5 hover:bg-accent"
+                  >
+                    <span className="min-w-0 truncate text-[15px] font-medium">{server.name}</span>
+                    <span className="shrink-0 text-[12.5px] text-muted-foreground">
+                      {!server.enabled ? (
+                        <Trans>Disabled</Trans>
+                      ) : server.oauthStatus === "reconnect" ? (
+                        <Trans>OAuth expired</Trans>
+                      ) : server.oauthStatus === "connected" ? (
+                        <Trans>OAuth connected</Trans>
+                      ) : server.hasSecret ? (
+                        <Trans>credential saved</Trans>
+                      ) : (
+                        <Trans>no auth</Trans>
+                      )}
+                    </span>
+                  </div>
+                ))}
+            </section>
+          ) : null}
           <Button
             variant="outline"
             className="mb-4"
