@@ -247,7 +247,8 @@ describe("compact native markdown", () => {
     const regularSizes = headingSizes(normal);
     const compactSizes = headingSizes(compact);
     expect(regularSizes).toEqual([21, 19, 17, 16, 13, 11]);
-    expect(compactSizes).toEqual(regularSizes.map((size) => size - 3));
+    expect(compactSizes).toEqual([18, 16, 14, 13, 11, 11]);
+    expect(compactSizes.every((size) => size >= 11)).toBe(true);
     expect([...compactSizes].sort((a, b) => b - a)).toEqual(compactSizes);
   });
 });
