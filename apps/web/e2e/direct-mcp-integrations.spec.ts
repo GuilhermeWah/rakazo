@@ -1,5 +1,11 @@
 import { expect, test } from "@playwright/test";
-import { captureScreenshot, completeOnboarding, rpc, signup } from "./helpers";
+import {
+  captureScreenshot,
+  completeOnboarding,
+  expandAdvancedSection,
+  rpc,
+  signup,
+} from "./helpers";
 
 test("shows directly registered MCP servers in Integrations without catalog connections", async ({
   page,
@@ -9,9 +15,7 @@ test("shows directly registered MCP servers in Integrations without catalog conn
   await page.goto("/app");
   await page.waitForURL(/\/app\/[^/]+$/);
   await page.getByRole("button", { name: "Connect apps", exact: true }).click();
-  await page.getByTestId("integrations-advanced").evaluate((element) => {
-    (element as HTMLDetailsElement).open = true;
-  });
+  await expandAdvancedSection(page.getByTestId("integrations-advanced"));
   await page.getByRole("button", { name: "Manage MCP servers", exact: true }).click();
   await expect(page.getByRole("heading", { name: "MCP servers", exact: true })).toBeVisible();
   await expect(page.getByRole("textbox", { name: "Server name", exact: true })).toBeVisible();
@@ -43,9 +47,7 @@ test("shows directly registered MCP servers in Integrations without catalog conn
   await expect(servers.getByText("GitHub", { exact: true })).toBeVisible();
   await page.setViewportSize({ width: 390, height: 844 });
   await captureScreenshot(page, testInfo, "integrations-direct-mcp-mobile");
-  await page.getByTestId("integrations-advanced").evaluate((element) => {
-    (element as HTMLDetailsElement).open = true;
-  });
+  await expandAdvancedSection(page.getByTestId("integrations-advanced"));
   await expect(page.getByRole("button", { name: "Manage MCP servers", exact: true })).toHaveCount(
     1,
   );
