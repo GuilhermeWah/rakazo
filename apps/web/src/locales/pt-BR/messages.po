@@ -3531,7 +3531,6 @@ msgstr "Falha na conexão OAuth"
 #: src/pages/PluginsOverlay.tsx
 msgid "OAuth expired"
 msgstr "OAuth expirado"
-#: src/pages/PluginsOverlay.tsx
 
 #: src/pages/RoutineEditor.tsx
 msgid "On a schedule"

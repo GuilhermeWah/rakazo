@@ -3531,7 +3531,6 @@ msgstr "OAuth कनेक्शन विफल"
 #: src/pages/PluginsOverlay.tsx
 msgid "OAuth expired"
 msgstr "OAuth की समय-सीमा समाप्त हो गई"
-#: src/pages/PluginsOverlay.tsx
 
 #: src/pages/RoutineEditor.tsx
 msgid "On a schedule"
