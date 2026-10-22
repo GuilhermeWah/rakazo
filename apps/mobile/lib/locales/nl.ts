@@ -871,8 +871,8 @@ export const NL_MESSAGES: Record<string, string> = {
   Disabled: "Uitgeschakeld",
   "OAuth connected": "OAuth verbonden",
   "OAuth expired": "OAuth verlopen",
-  "credential saved": "inloggegevens opgeslagen",
-  "no auth": "geen authenticatie",
+  "Credential saved": "Inloggegevens opgeslagen",
+  "No auth": "Geen authenticatie",
   "The bot couldn't reply because its provider's daily limit was reached.":
     "De bot kon niet antwoorden omdat de daglimiet van zijn provider is bereikt.",
   "The bot couldn't reply because its provider's weekly limit was reached.":

@@ -1963,8 +1963,8 @@ msgstr "Kimlik bilgisi"
 
 #: src/pages/McpServersOverlay.tsx
 #: src/pages/PluginsOverlay.tsx
-msgid "credential saved"
-msgstr "kimlik bilgisi kaydedildi"
+msgid "Credential saved"
+msgstr "Kimlik bilgisi kaydedildi"
 
 #: src/pages/shell/bot-credentials.tsx
 msgid "Credentials"
@@ -3347,8 +3347,8 @@ msgid "No artifacts found."
 msgstr ""
 
 #: src/pages/PluginsOverlay.tsx
-msgid "no auth"
-msgstr "kimlik doğrulamasız"
+msgid "No auth"
+msgstr "Kimlik doğrulamasız"
 
 #: src/pages/PluginsOverlay.tsx
 msgid "No authentication"

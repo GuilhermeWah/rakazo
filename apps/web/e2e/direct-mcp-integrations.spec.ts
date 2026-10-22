@@ -38,7 +38,9 @@ test("shows directly registered MCP servers in Integrations without catalog conn
     const server = servers.getByTestId("registered-mcp-server").filter({
       has: page.getByText(name, { exact: true }),
     });
-    await expect(server.getByText("credential saved", { exact: true })).toBeVisible();
+    await expect(server.getByText("Credential saved", { exact: true })).toBeVisible();
+    await expect(server.getByText(name.charAt(0), { exact: true })).toBeVisible();
+    await expect(server.getByRole("button")).toHaveCount(0);
   }
   await expect(servers).not.toContainText("fake-mcp-credential");
   await captureScreenshot(page, testInfo, "integrations-direct-mcp-servers");

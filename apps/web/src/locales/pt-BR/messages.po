@@ -1963,8 +1963,8 @@ msgstr "Credencial"
 
 #: src/pages/McpServersOverlay.tsx
 #: src/pages/PluginsOverlay.tsx
-msgid "credential saved"
-msgstr "credencial salva"
+msgid "Credential saved"
+msgstr "Credencial salva"
 
 #: src/pages/shell/bot-credentials.tsx
 msgid "Credentials"
@@ -3347,8 +3347,8 @@ msgid "No artifacts found."
 msgstr ""
 
 #: src/pages/PluginsOverlay.tsx
-msgid "no auth"
-msgstr "sem autenticação"
+msgid "No auth"
+msgstr "Sem autenticação"
 
 #: src/pages/PluginsOverlay.tsx
 msgid "No authentication"

@@ -1963,8 +1963,8 @@ msgstr "Учётные данные"
 
 #: src/pages/McpServersOverlay.tsx
 #: src/pages/PluginsOverlay.tsx
-msgid "credential saved"
-msgstr "учетные данные сохранены"
+msgid "Credential saved"
+msgstr "Учетные данные сохранены"
 
 #: src/pages/shell/bot-credentials.tsx
 msgid "Credentials"
@@ -3347,8 +3347,8 @@ msgid "No artifacts found."
 msgstr ""
 
 #: src/pages/PluginsOverlay.tsx
-msgid "no auth"
-msgstr "нет авторизации"
+msgid "No auth"
+msgstr "Нет авторизации"
 
 #: src/pages/PluginsOverlay.tsx
 msgid "No authentication"

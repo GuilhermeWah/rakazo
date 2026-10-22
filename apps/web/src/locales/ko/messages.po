@@ -1963,7 +1963,7 @@ msgstr "인증 정보"
 
 #: src/pages/McpServersOverlay.tsx
 #: src/pages/PluginsOverlay.tsx
-msgid "credential saved"
+msgid "Credential saved"
 msgstr "인증 정보 저장됨"
 
 #: src/pages/shell/bot-credentials.tsx
@@ -3347,7 +3347,7 @@ msgid "No artifacts found."
 msgstr ""
 
 #: src/pages/PluginsOverlay.tsx
-msgid "no auth"
+msgid "No auth"
 msgstr "인증 없음"
 
 #: src/pages/PluginsOverlay.tsx

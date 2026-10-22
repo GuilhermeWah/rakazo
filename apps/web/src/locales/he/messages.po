@@ -1963,7 +1963,7 @@ msgstr "פרטי גישה"
 
 #: src/pages/McpServersOverlay.tsx
 #: src/pages/PluginsOverlay.tsx
-msgid "credential saved"
+msgid "Credential saved"
 msgstr "פרטי הגישה נשמרו"
 
 #: src/pages/shell/bot-credentials.tsx
@@ -3347,7 +3347,7 @@ msgid "No artifacts found."
 msgstr "לא נמצאו תוצרים."
 
 #: src/pages/PluginsOverlay.tsx
-msgid "no auth"
+msgid "No auth"
 msgstr "ללא אימות"
 
 #: src/pages/PluginsOverlay.tsx

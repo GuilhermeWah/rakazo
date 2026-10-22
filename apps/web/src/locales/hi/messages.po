@@ -1963,7 +1963,7 @@ msgstr "क्रेडेंशियल"
 
 #: src/pages/McpServersOverlay.tsx
 #: src/pages/PluginsOverlay.tsx
-msgid "credential saved"
+msgid "Credential saved"
 msgstr "क्रेडेंशियल सहेजा गया"
 
 #: src/pages/shell/bot-credentials.tsx
@@ -3347,7 +3347,7 @@ msgid "No artifacts found."
 msgstr ""
 
 #: src/pages/PluginsOverlay.tsx
-msgid "no auth"
+msgid "No auth"
 msgstr "कोई प्रमाणीकरण नहीं"
 
 #: src/pages/PluginsOverlay.tsx

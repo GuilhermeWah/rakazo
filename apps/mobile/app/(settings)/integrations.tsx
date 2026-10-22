@@ -772,6 +772,7 @@ export default function Integrations() {
               )
               .map((server) => (
                 <View key={server.id} testID="registered-mcp-server" style={styles.row}>
+                  <ConnectorIcon name={server.name} size={LOGO_SIZE} />
                   <Text numberOfLines={1} style={[styles.title, styles.grow]}>
                     {server.name}
                   </Text>
@@ -783,8 +784,8 @@ export default function Integrations() {
                         : server.oauthStatus === "connected"
                           ? t("OAuth connected")
                           : server.hasSecret
-                            ? t("credential saved")
-                            : t("no auth")}
+                            ? t("Credential saved")
+                            : t("No auth")}
                   </Text>
                 </View>
               ))}

@@ -43,6 +43,22 @@ import { optionalCatalogFeedProbe } from "../lib/optional-catalog-feed";
 import { rpc } from "../lib/rpc";
 import { errorText } from "../lib/user-error";
 
+function ConnectorIcon({ name, logo }: { name: string; logo?: string | null }) {
+  return logo ? (
+    <img
+      src={logo}
+      alt=""
+      loading="lazy"
+      decoding="async"
+      className="h-9 w-9 shrink-0 rounded-xl bg-accent object-contain"
+    />
+  ) : (
+    <div className="grid h-9 w-9 shrink-0 place-items-center rounded-xl bg-accent text-sm font-semibold text-foreground">
+      {name[0]}
+    </div>
+  );
+}
+
 type SourceKind = "treg" | "executor" | "mcp" | "api" | "graphql";
 
 type ConnectionTool = { name: string; description: string };
@@ -487,19 +503,7 @@ export function PluginsOverlay({
   ) {
     const connected = itemConnected(item);
     const tileTestId = opts?.tileTestId !== false && connected;
-    const icon = logo ? (
-      <img
-        src={logo}
-        alt=""
-        loading="lazy"
-        decoding="async"
-        className="h-9 w-9 shrink-0 rounded-xl bg-accent object-contain"
-      />
-    ) : (
-      <div className="grid h-9 w-9 shrink-0 place-items-center rounded-xl bg-accent text-sm font-semibold text-foreground">
-        {label[0]}
-      </div>
-    );
+    const icon = <ConnectorIcon name={label} logo={logo} />;
     const title = (
       <div className="min-w-0 flex-1 text-start">
         <div className="truncate text-[15px] font-medium text-foreground">{label}</div>
@@ -745,9 +749,12 @@ export function PluginsOverlay({
                   <div
                     key={server.id}
                     data-testid="registered-mcp-server"
-                    className="flex items-center justify-between gap-3 rounded-xl px-3 py-2.5 hover:bg-accent"
+                    className="flex min-w-0 items-center gap-3 rounded-xl px-2.5 py-2"
                   >
-                    <span className="min-w-0 truncate text-[15px] font-medium">{server.name}</span>
+                    <ConnectorIcon name={server.name} />
+                    <span className="min-w-0 flex-1 truncate text-[15px] font-medium">
+                      {server.name}
+                    </span>
                     <span className="shrink-0 text-[12.5px] text-muted-foreground">
                       {!server.enabled ? (
                         <Trans>Disabled</Trans>
@@ -756,9 +763,9 @@ export function PluginsOverlay({
                       ) : server.oauthStatus === "connected" ? (
                         <Trans>OAuth connected</Trans>
                       ) : server.hasSecret ? (
-                        <Trans>credential saved</Trans>
+                        <Trans>Credential saved</Trans>
                       ) : (
-                        <Trans>no auth</Trans>
+                        <Trans>No auth</Trans>
                       )}
                     </span>
                   </div>
@@ -1181,9 +1188,9 @@ export function PluginsOverlay({
                           <div className="truncate text-[13.5px] text-muted-foreground/70">
                             {source.kind.toUpperCase()} · {source.source} ·{" "}
                             {source.secretConfigured ? (
-                              <Trans>credential saved</Trans>
+                              <Trans>Credential saved</Trans>
                             ) : (
-                              <Trans>no auth</Trans>
+                              <Trans>No auth</Trans>
                             )}
                           </div>
                         </div>
